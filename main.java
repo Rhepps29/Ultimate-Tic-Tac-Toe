@@ -68,6 +68,13 @@ class main {
 		int innerboard = input.nextInt()-1;
 		boolean ongoing = true;
 		do{
+			if (innerboardfull(board, innerboard)){
+				System.out.println("[1][2][3]");
+				System.out.println("[4][5][6]");
+				System.out.println("[7][8][9]");
+				System.out.print("Pick your board: ");
+				innerboard = input.nextInt()-1;
+			}
 			System.out.print("Pick row (1-3): ");
 			int rowchoice = input.nextInt();
 			System.out.print("Pick column (1-3): ");
@@ -86,5 +93,20 @@ class main {
 			}
 			printboard(board);
 		}while (ongoing);
+	}
+	public static boolean innerboardfull(char[][][] board, int innerboard){
+		boolean full = false;
+		int count = 0;
+		for (int i = 0; i<3; i++){
+			for(int j = 0; j<3; j++){
+				if (board[innerboard][i][j] != ' '){
+					count++;
+				}
+			}
+		}
+		if (count == 9){
+			full = true;
+		}
+		return full;
 	}
 }
