@@ -2,6 +2,7 @@ import java.util.*;
 
 class main {
 	public static void main(String[] args) {
+		System.out.println("Ultimate Tic Tac Toe");
 		char[][][] board = new char[][][]{
 			{{' ',' ',' '},
 			{' ',' ',' '},
@@ -95,6 +96,8 @@ class main {
 			System.out.print("Pick column (1-3): ");
 			int colchoice = input.nextInt();
 			int nextboard = (rowchoice-1)*3+(colchoice-1);
+			System.out.print("\033[H\033[2J");  
+			System.out.flush(); 
 			if (board[innerboard][rowchoice-1][colchoice-1] == ' '){
 				board[innerboard][rowchoice-1][colchoice-1] = player;
 				if (innerboardwon(board, innerboard)&&(board[9][innerboard/3][innerboard%3]=='a')){
@@ -126,6 +129,8 @@ class main {
 				ongoing = false;
 			}
 		}while (ongoing);
+		System.out.print("\033[H\033[2J");  
+		System.out.flush();  
 		System.out.print("Game End.");
 	}
 	public static boolean innerboardfull(char[][][] board, int innerboard){
