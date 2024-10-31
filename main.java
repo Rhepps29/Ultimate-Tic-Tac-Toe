@@ -1,4 +1,5 @@
 import java.util.*;
+import java.nio.channels.*;
 
 class main {
 	public static void main(String[] args) {
@@ -44,7 +45,7 @@ class main {
 			{' ',' ',' '},
 			{' ',' ',' '}},
 		};
-		multiplayergame(board);
+		multiplayergame(board, 1);
 	}
 	public static void printboard(char [][][] board){
 		System.out.println("_______");
@@ -73,7 +74,7 @@ class main {
 		}
 		
 	}
-	public static void multiplayergame(char [][][] board){
+	public static void multiplayergame(char [][][] board, int playercount){
 		Scanner input = new Scanner(System.in);
 		char player = 'x';
 		printboard(board);
@@ -83,6 +84,8 @@ class main {
 		System.out.print("Pick the initial board: ");
 		int innerboard = input.nextInt()-1;
 		boolean ongoing = true;
+		int[] aiarraychoice;
+		aiarraychoice = new int[2];
 		do{
 			if (innerboardfull(board, innerboard)){
 				System.out.println("[1][2][3]");
@@ -91,10 +94,18 @@ class main {
 				System.out.print("Pick your board: ");
 				innerboard = input.nextInt()-1;
 			}
-			System.out.print("Pick row (1-3): ");
-			int rowchoice = input.nextInt();
-			System.out.print("Pick column (1-3): ");
-			int colchoice = input.nextInt();
+			int rowchoice;
+			int colchoice;
+			if ((playercount ==2) || (player == 'x')){
+				System.out.print("Pick row (1-3): ");
+				rowchoice = input.nextInt();
+				System.out.print("Pick column (1-3): ");
+				colchoice = input.nextInt();
+			}else{
+				aiarraychoice = aipick(board, innerboard);
+				rowchoice = aiarraychoice[0]+1;
+				colchoice = aiarraychoice[1]+1;
+			}
 			int nextboard = (rowchoice-1)*3+(colchoice-1);
 			System.out.print("\033[H\033[2J");  
 			System.out.flush(); 
@@ -126,12 +137,24 @@ class main {
 			}
 			printboard(board);
 			if (innerboardwon(board, 9) || innerboardfull(board,9)){
+				if (innerboardfull(board,9) && !(innerboardwon(board,9))){
+					player = '0';
+				}
 				ongoing = false;
 			}
 		}while (ongoing);
 		System.out.print("\033[H\033[2J");  
 		System.out.flush();  
-		System.out.print("Game End.");
+		if (player == 'x'){
+			player = 'o';
+		}else{
+			player = 'x';
+		}
+		if (!(player=='0')){
+			System.out.print("Game End. "+Character.toUpperCase(player) + " won.");}
+		else{
+			System.out.print("Game End. Tie");
+		}
 	}
 	public static boolean innerboardfull(char[][][] board, int innerboard){
 		boolean full = false;
@@ -165,5 +188,139 @@ class main {
 			won = true;
 		}
 		return won;
+	}
+	public static int[] aipick(char[][][] board, int innerboard){
+		int[] aiarraychoice = new int[] {0,0};
+		int currentleader = -10000000;
+		int[][] aiarrayweights = new int[][]
+		{{0,0,0},
+		{0,0,0},
+		{0,0,0}};
+		for (int i = 0; i<3; i++){
+			for(int j = 0; j<3;j++){
+				if (board[innerboard][i][j] != ' '){
+					aiarrayweights[i][j]= -100000;
+				}
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][i][0]==board[innerboard][i][1]){
+				aiarrayweights[i][2] += 10;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][i][0]==board[innerboard][i][2]){
+				aiarrayweights[i][1] += 10;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][i][1]==board[innerboard][i][2]){
+				aiarrayweights[i][0] += 10;
+			}
+		}
+		
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][0][i]==board[innerboard][1][i]){
+				aiarrayweights[2][i] += 10;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][0][i]==board[innerboard][2][i]){
+				aiarrayweights[1][i] += 10;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[innerboard][1][i]==board[innerboard][2][i]){
+				aiarrayweights[0][i] += 10;
+			}
+		}
+		if (board[innerboard][0][0]==board[innerboard][2][2]||board[innerboard][0][2]==board[innerboard][2][0]){
+			aiarrayweights[1][1] += 10;
+		}
+		if (board[innerboard][0][0]==board[innerboard][1][1]){
+			aiarrayweights[2][2] += 10;
+		}
+		if (board[innerboard][2][2]==board[innerboard][1][1]){
+			aiarrayweights[0][0] += 10;
+		}
+		if (board[innerboard][0][2]==board[innerboard][1][1]){
+			aiarrayweights[2][0] += 10;
+		}
+		if (board[innerboard][2][0]==board[innerboard][1][1]){
+			aiarrayweights[0][2] += 10;
+		}
+		for (int i = 0; i<3;i++){
+			for (int j = 0; j<3; j++){
+				if (board[9][i][j] != ' '){
+					aiarrayweights[i][j]+= 9;
+				}
+			}
+		}
+		aiarrayweights[1][0]+=1;
+		aiarrayweights[0][1]+=1;
+		aiarrayweights[2][1]+=1;		
+		aiarrayweights[1][2]+=1;
+		for (int i = 0; i<3;i++){
+			if (board[9][i][0]==board[9][i][1]){
+				aiarrayweights[i][2] -= 20;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[9][i][0]==board[9][i][2]){
+				aiarrayweights[i][1] -= 20;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[9][i][1]==board[9][i][2]){
+				aiarrayweights[i][0] -= 20;
+			}
+		}
+		
+		for (int i = 0; i<3;i++){
+			if (board[9][0][i]==board[9][1][i]){
+				aiarrayweights[2][i] -= 20;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[9][0][i]==board[9][2][i]){
+				aiarrayweights[1][i] -= 20;
+			}
+		}
+		for (int i = 0; i<3;i++){
+			if (board[9][1][i]==board[9][2][i]){
+				aiarrayweights[0][i] -= 20;
+			}
+		}
+		if (board[9][0][0]==board[9][2][2]||board[9][0][2]==board[9][2][0]){
+			aiarrayweights[1][1] -= 20;
+		}
+		if (board[9][0][0]==board[9][1][1]){
+			aiarrayweights[2][2] -= 20;
+		}
+		if (board[9][2][2]==board[9][1][1]){
+			aiarrayweights[0][0] -= 20;
+		}
+		if (board[9][0][2]==board[9][1][1]){
+			aiarrayweights[2][0] -= 20;
+		}
+		if (board[9][2][0]==board[9][1][1]){
+			aiarrayweights[0][2] -= 20;
+		}
+		for (int i = 0; i<3;i++){
+			for (int j = 0; j<3; j++){
+				if (aiarrayweights[i][j]>currentleader){
+					currentleader = aiarrayweights[i][j];
+					aiarraychoice[0]= i;
+					aiarraychoice[1]=j;
+				}else if (aiarrayweights[i][j]==currentleader){
+					Random rand = new Random();
+					if (rand.nextInt(2)==0){
+						aiarraychoice[0]= i;
+						aiarraychoice[1]=j;
+					}
+				}
+			}
+		}
+		return aiarraychoice;
 	}
 }
