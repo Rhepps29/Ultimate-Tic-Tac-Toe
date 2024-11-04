@@ -97,10 +97,14 @@ class main {
 			int rowchoice;
 			int colchoice;
 			if ((playercount ==2) || (player == 'x')){
-				System.out.print("Pick row (1-3): ");
-				rowchoice = input.nextInt();
-				System.out.print("Pick column (1-3): ");
-				colchoice = input.nextInt();
+				do {
+					System.out.print("Pick row (1-3): ");
+					rowchoice = input.nextInt();
+				}while (!(rowchoice<4&&rowchoice>0));
+				do {
+					System.out.print("Pick column (1-3): ");
+					colchoice = input.nextInt();
+				}while (!(colchoice<4&&colchoice>0));
 			}else{
 				aiarraychoice = aipick(board, innerboard);
 				rowchoice = aiarraychoice[0]+1;
@@ -143,8 +147,6 @@ class main {
 				ongoing = false;
 			}
 		}while (ongoing);
-		System.out.print("\033[H\033[2J");  
-		System.out.flush();  
 		if (player == 'x'){
 			player = 'o';
 		}else{
@@ -190,6 +192,8 @@ class main {
 		return won;
 	}
 	public static int[] aipick(char[][][] board, int innerboard){
+		char aiplayer ='o';
+		char hplayer = 'x';
 		int[] aiarraychoice = new int[] {0,0};
 		int currentleader = -10000000;
 		int[][] aiarrayweights = new int[][]
@@ -204,49 +208,52 @@ class main {
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][i][0]==board[innerboard][i][1]){
+			if (board[innerboard][i][0]==board[innerboard][i][1] && board[innerboard][i][1]!= ' '){
 				aiarrayweights[i][2] += 10;
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][i][0]==board[innerboard][i][2]){
+			if (board[innerboard][i][0]==board[innerboard][i][2] && board[innerboard][i][2]!= ' '){
 				aiarrayweights[i][1] += 10;
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][i][1]==board[innerboard][i][2]){
+			if (board[innerboard][i][1]==board[innerboard][i][2] && board[innerboard][i][2]!= ' '){
 				aiarrayweights[i][0] += 10;
 			}
 		}
 		
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][0][i]==board[innerboard][1][i]){
+			if (board[innerboard][0][i]==board[innerboard][1][i]&& board[innerboard][1][i]!= ' '){
 				aiarrayweights[2][i] += 10;
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][0][i]==board[innerboard][2][i]){
+			if (board[innerboard][0][i]==board[innerboard][2][i]&& board[innerboard][2][i]!= ' '){
 				aiarrayweights[1][i] += 10;
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[innerboard][1][i]==board[innerboard][2][i]){
+			if (board[innerboard][1][i]==board[innerboard][2][i]&& board[innerboard][1][i]!= ' '){
 				aiarrayweights[0][i] += 10;
 			}
 		}
-		if (board[innerboard][0][0]==board[innerboard][2][2]||board[innerboard][0][2]==board[innerboard][2][0]){
+		if (board[innerboard][0][0]==board[innerboard][2][2]&& board[innerboard][0][0]!= ' '){
 			aiarrayweights[1][1] += 10;
 		}
-		if (board[innerboard][0][0]==board[innerboard][1][1]){
+		if (board[innerboard][0][2]==board[innerboard][2][0]&& board[innerboard][0][0]!= ' '){
+			aiarrayweights[1][1] += 10;
+		}
+		if (board[innerboard][0][0]==board[innerboard][1][1]&& board[innerboard][0][0]!= ' '){
 			aiarrayweights[2][2] += 10;
 		}
-		if (board[innerboard][2][2]==board[innerboard][1][1]){
+		if (board[innerboard][2][2]==board[innerboard][1][1]&& board[innerboard][2][2]!= ' '){
 			aiarrayweights[0][0] += 10;
 		}
-		if (board[innerboard][0][2]==board[innerboard][1][1]){
+		if (board[innerboard][0][2]==board[innerboard][1][1]&& board[innerboard][0][2]!= ' '){
 			aiarrayweights[2][0] += 10;
 		}
-		if (board[innerboard][2][0]==board[innerboard][1][1]){
+		if (board[innerboard][2][0]==board[innerboard][1][1]&& board[innerboard][2][0]!= ' '){
 			aiarrayweights[0][2] += 10;
 		}
 		for (int i = 0; i<3;i++){
@@ -258,54 +265,125 @@ class main {
 		}
 		aiarrayweights[1][0]+=1;
 		aiarrayweights[0][1]+=1;
-		aiarrayweights[2][1]+=1;		
+		aiarrayweights[2][1]+=1;
 		aiarrayweights[1][2]+=1;
 		for (int i = 0; i<3;i++){
-			if (board[9][i][0]==board[9][i][1]){
-				aiarrayweights[i][2] -= 20;
+			if (board[9][i][0]==board[9][i][1]&& board[9][i][0]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[i][2] -= 20;
+				}else{
+					aiarrayweights[i][2] += 20;
+				}
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[9][i][0]==board[9][i][2]){
-				aiarrayweights[i][1] -= 20;
+			if (board[9][i][0]==board[9][i][2]&& board[9][i][0]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[i][1] -= 20;
+				}else{
+					aiarrayweights[i][1] += 20;
+				}
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[9][i][1]==board[9][i][2]){
-				aiarrayweights[i][0] -= 20;
+			if (board[9][i][1]==board[9][i][2]&& board[9][i][1]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[i][0] -= 20;
+				}else{
+					aiarrayweights[i][0] += 20;
+				}
 			}
 		}
 		
 		for (int i = 0; i<3;i++){
-			if (board[9][0][i]==board[9][1][i]){
-				aiarrayweights[2][i] -= 20;
+			if (board[9][0][i]==board[9][1][i]&& board[9][0][i]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[2][i] -= 20;
+				}else{
+					aiarrayweights[2][i] += 20;
+				}
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[9][0][i]==board[9][2][i]){
-				aiarrayweights[1][i] -= 20;
+			if (board[9][0][i]==board[9][2][i]&& board[9][0][i]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[1][i] -= 20;
+				}else{
+					aiarrayweights[1][i] += 20;
+				}
 			}
 		}
 		for (int i = 0; i<3;i++){
-			if (board[9][1][i]==board[9][2][i]){
-				aiarrayweights[0][i] -= 20;
+			if (board[9][1][i]==board[9][2][i]&& board[9][1][i]!= ' '){
+				if (board[9][i][0]==hplayer){
+					aiarrayweights[0][i] -= 20;
+				}else{
+					aiarrayweights[0][i] += 20;
+				}
 			}
 		}
-		if (board[9][0][0]==board[9][2][2]||board[9][0][2]==board[9][2][0]){
-			aiarrayweights[1][1] -= 20;
+		if (board[9][0][0]==board[9][2][2]&&board[9][2][2]!= ' '){
+			if (board[9][0][0]==hplayer){
+				aiarrayweights[1][1] -= 20;
+			}else{
+				aiarrayweights[1][1] += 20;
+			}
 		}
-		if (board[9][0][0]==board[9][1][1]){
-			aiarrayweights[2][2] -= 20;
+		if (board[9][0][2]==board[9][2][0]&&board[9][2][0]!= ' '){
+			if (board[9][0][0]==hplayer){
+				aiarrayweights[1][1] -= 20;
+			}else{
+				aiarrayweights[1][1] += 20;
+			}
 		}
-		if (board[9][2][2]==board[9][1][1]){
-			aiarrayweights[0][0] -= 20;
+		if (board[9][0][0]==board[9][1][1]&& board[9][1][1]!= ' '){
+			if (board[9][0][0]==hplayer){
+				aiarrayweights[2][2] -= 20;
+			}else{
+				aiarrayweights[2][2] += 20;
+			}
 		}
-		if (board[9][0][2]==board[9][1][1]){
-			aiarrayweights[2][0] -= 20;
+		if (board[9][2][2]==board[9][1][1]&& board[9][1][1]!= ' '){
+			if (board[9][2][2]==hplayer){
+				aiarrayweights[0][0] -= 20;
+			}else{
+				aiarrayweights[0][0] += 20;
+			}
 		}
-		if (board[9][2][0]==board[9][1][1]){
-			aiarrayweights[0][2] -= 20;
+		if (board[9][0][2]==board[9][1][1]&& board[9][1][1]!= ' '){
+			if (board[9][1][1]==hplayer){
+				aiarrayweights[2][0] -= 20;
+			}else{
+				aiarrayweights[2][0] += 20;
+			}
 		}
+		if (board[9][2][0]==board[9][1][1]&& board[9][1][1]!= ' '){
+			if (board[9][1][1]==hplayer){
+				aiarrayweights[0][2] -= 20;
+			}else{
+				aiarrayweights[0][2] += 20;
+			}
+		}
+		int boardscore[] =  new int[] {0,0,0,0,0,0,0,0,0,0};
+		int bestboard = 0;
+		for (int k = 0; k<9; k++){
+			for (int i = 0; i<3; i++){
+				for(int j = 0; j<3; j++){
+					if (board[k][i][j] == hplayer){
+						boardscore[k+1] --;
+					}else if(board[k][i][j]==aiplayer){
+						boardscore[k+1] ++;
+					}
+				}
+			}
+			if (boardscore[k+1]>boardscore[k]){
+				bestboard = k-1;
+			}
+			if (boardscore[k]>0){
+				aiarrayweights[k/3][k%3] +=1;
+			}
+		}
+		aiarrayweights[bestboard/3][bestboard%3] += 2;
 		for (int i = 0; i<3;i++){
 			for (int j = 0; j<3; j++){
 				if (aiarrayweights[i][j]>currentleader){
@@ -316,7 +394,7 @@ class main {
 					Random rand = new Random();
 					if (rand.nextInt(2)==0){
 						aiarraychoice[0]= i;
-						aiarraychoice[1]=j;
+						aiarraychoice[1]= j;
 					}
 				}
 			}
