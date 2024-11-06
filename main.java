@@ -45,7 +45,7 @@ class main {
 			{' ',' ',' '},
 			{' ',' ',' '}},
 		};
-		multiplayergame(board, 1);
+		multiplayergame(board, 2);
 	}
 	public static void printboard(char [][][] board){
 		System.out.println("_______");
@@ -78,21 +78,33 @@ class main {
 		Scanner input = new Scanner(System.in);
 		char player = 'x';
 		printboard(board);
-		System.out.println("[1][2][3]");
-		System.out.println("[4][5][6]");
-		System.out.println("[7][8][9]");
-		System.out.print("Pick the initial board: ");
-		int innerboard = input.nextInt()-1;
+		int innerboard =  0;
+		if ((playercount ==2) || (player == 'x')){
+			System.out.println("[1][2][3]");
+			System.out.println("[4][5][6]");
+			System.out.println("[7][8][9]");
+			System.out.print("Pick the initial board: ");
+			innerboard = input.nextInt()-1;
+		}else{
+			Random rand =new Random();
+			innerboard = rand.nextInt(9);
+		}
 		boolean ongoing = true;
 		int[] aiarraychoice;
 		aiarraychoice = new int[2];
 		do{
 			if (innerboardfull(board, innerboard)){
-				System.out.println("[1][2][3]");
-				System.out.println("[4][5][6]");
-				System.out.println("[7][8][9]");
-				System.out.print("Pick your board: ");
-				innerboard = input.nextInt()-1;
+				if (player == 'x' || playercount == 2){
+					System.out.println("[1][2][3]");
+					System.out.println("[4][5][6]");
+					System.out.println("[7][8][9]");
+					System.out.print("Pick your board: ");
+					innerboard = input.nextInt()-1;
+				}else{
+					//Yes, this is a lame way to do this, no I don't care.
+					Random rand = new Random();
+					innerboard = rand.nextInt(9);
+				}
 			}
 			int rowchoice;
 			int colchoice;
@@ -139,6 +151,8 @@ class main {
 			}else{
 				board[9][innerboard/3][innerboard%3]= Character.toUpperCase(board[9][innerboard/3][innerboard%3]);
 			}
+			if (playercount ==2){
+				System.out.println("Player: "+player);}
 			printboard(board);
 			if (innerboardwon(board, 9) || innerboardfull(board,9)){
 				if (innerboardfull(board,9) && !(innerboardwon(board,9))){
@@ -149,7 +163,7 @@ class main {
 		}while (ongoing);
 		if (player == 'x'){
 			player = 'o';
-		}else{
+		}else if (player == 'o'){
 			player = 'x';
 		}
 		if (!(player=='0')){
@@ -164,7 +178,9 @@ class main {
 		for (int i = 0; i<3; i++){
 			for(int j = 0; j<3; j++){
 				if (board[innerboard][i][j] != ' '){
-					count++;
+					if (board[innerboard][i][j] != 'a'){
+						count++;
+					}
 				}
 			}
 		}
@@ -377,7 +393,7 @@ class main {
 				}
 			}
 			if (boardscore[k+1]>boardscore[k]){
-				bestboard = k-1;
+				bestboard = k;
 			}
 			if (boardscore[k]>0){
 				aiarrayweights[k/3][k%3] +=1;
