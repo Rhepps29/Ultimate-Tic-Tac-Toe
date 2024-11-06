@@ -45,7 +45,16 @@ class main {
 			{' ',' ',' '},
 			{' ',' ',' '}},
 		};
-		multiplayergame(board, 2);
+		System.out.println("1. One-Player");
+		System.out.println("2. Two-Player");
+		System.out.println("3. Tutorial (Help)");
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter number: ");
+		int choice = input.nextInt();
+		if (!(choice >= 3 || choice < 1)){
+			multiplayergame(board, choice);	
+		}
+		System.out.print("HI");
 	}
 	public static void printboard(char [][][] board){
 		System.out.println("_______");
