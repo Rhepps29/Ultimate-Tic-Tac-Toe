@@ -54,8 +54,10 @@ class main {
 		if (!(choice >= 3 || choice < 1)){
 			multiplayergame(board, choice);	
 		}
+		//This is the tutorial
 		System.out.print("HI");
 	}
+	//This is the board
 	public static void printboard(char [][][] board){
 		System.out.println("_______");
 		for (int m = 0; m<3; m++){
@@ -84,6 +86,7 @@ class main {
 		
 	}
 	public static void multiplayergame(char [][][] board, int playercount){
+		//Make it so user input can be taken. Determine player, prints board.
 		Scanner input = new Scanner(System.in);
 		char player = 'x';
 		printboard(board);
@@ -98,9 +101,11 @@ class main {
 			Random rand =new Random();
 			innerboard = rand.nextInt(9);
 		}
+		//First board of the game picker
 		boolean ongoing = true;
 		int[] aiarraychoice;
 		aiarraychoice = new int[2];
+		//Defining variables. Eh.
 		do{
 			if (innerboardfull(board, innerboard)){
 				if (player == 'x' || playercount == 2){
@@ -117,6 +122,7 @@ class main {
 			}
 			int rowchoice;
 			int colchoice;
+			//Look at those variables.
 			if ((playercount ==2) || (player == 'x')){
 				do {
 					System.out.print("Pick row (1-3): ");
@@ -131,9 +137,11 @@ class main {
 				rowchoice = aiarraychoice[0]+1;
 				colchoice = aiarraychoice[1]+1;
 			}
+			//Row and column picker
 			int nextboard = (rowchoice-1)*3+(colchoice-1);
 			System.out.print("\033[H\033[2J");  
 			System.out.flush(); 
+			//Yes, I copied those lines from the internet. No, I don't have any regrets.
 			if (board[innerboard][rowchoice-1][colchoice-1] == ' '){
 				board[innerboard][rowchoice-1][colchoice-1] = player;
 				if (innerboardwon(board, innerboard)&&(board[9][innerboard/3][innerboard%3]=='a')){
@@ -153,7 +161,9 @@ class main {
 				}
 				innerboard = nextboard;
 			}else{
+			//What should be in the mini board.....
 				System.out.println("Invalid Choice.");
+			//Beautiful. Simply beautiful.
 			}
 			if (board[9][innerboard/3][innerboard%3]==' '||board[9][innerboard/3][innerboard%3]=='a'){
 				board[9][innerboard/3][innerboard%3]='a';
@@ -162,6 +172,7 @@ class main {
 			}
 			if (playercount ==2){
 				System.out.println("Player: "+player);}
+			//Added cause I confuse myself.
 			printboard(board);
 			if (innerboardwon(board, 9) || innerboardfull(board,9)){
 				if (innerboardfull(board,9) && !(innerboardwon(board,9))){
@@ -170,6 +181,7 @@ class main {
 				ongoing = false;
 			}
 		}while (ongoing);
+		//yay! You ended the game, nerd.
 		if (player == 'x'){
 			player = 'o';
 		}else if (player == 'o'){
@@ -182,12 +194,14 @@ class main {
 		}
 	}
 	public static boolean innerboardfull(char[][][] board, int innerboard){
+		//This code detects if the board is full (gasp)
 		boolean full = false;
 		int count = 0;
 		for (int i = 0; i<3; i++){
 			for(int j = 0; j<3; j++){
 				if (board[innerboard][i][j] != ' '){
 					if (board[innerboard][i][j] != 'a'){
+						//the line above exists cause I use innerboard for the miniboard too.
 						count++;
 					}
 				}
@@ -215,8 +229,10 @@ class main {
 			won = true;
 		}
 		return won;
+		//You think that's a lot of if statements...wait like 10 lines.
 	}
 	public static int[] aipick(char[][][] board, int innerboard){
+		//And now: Most of the code.
 		char aiplayer ='o';
 		char hplayer = 'x';
 		int[] aiarraychoice = new int[] {0,0};
