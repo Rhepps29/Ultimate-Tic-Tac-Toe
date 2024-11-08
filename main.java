@@ -55,7 +55,122 @@ class main {
 			multiplayergame(board, choice);	
 		}
 		//This is the tutorial
-		System.out.print("HI");
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("The rules are simple.");
+		System.out.println("Imagine a tic tac toe grid.");
+		System.out.println("_____________");
+		for(int l = 0; l<9; l=l+3){
+			for (int k = 0; k<3; k++){
+				System.out.print("|");
+				for (int i = 0; i<3; i++){
+					for (int j = 0; j<3; j++){
+						System.out.print(board[i+l][k][j]);
+					}
+					System.out.print("|");
+				}
+				System.out.println();
+			}
+			System.out.println("_____________");
+		}
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("Now imagine each tic tac toe grid had a grid inside it.");
+		System.out.println("That's the basic concept of ultimate tic tac toe. 9 games of tic tac toe arranged in a board.");
+		System.out.println("Now, playing with nine boards adds a few caveats.");
+		System.out.println("Let's say x went here.");
+		board[4][1][2] = 'x';
+		printboard(board);
+		try {
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("You'd assume o can go here.");
+		board[4][2][2] = 'o';
+		printboard(board);
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("But they can't.");
+		System.out.println("o can only go in the board that x selected in the interior board.");
+		board[4][2][2] = ' ';
+		board[5][0][1] = 'o';
+		printboard(board);
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("Here's another example. X goes, then O goes.");
+		board[5][0][1] = ' ';
+		board[4][1][2] = ' ';
+		board[0][1][1] = 'x';
+		board[4][2][1] = 'o';
+		printboard(board);
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		System.out.println("Now, it's your turn. Which board will o be sent to?");
+		board[0][1][1] = ' ';
+		board[4][2][1] = ' ';
+		board[3][2][2] = 'x';
+		printboard(board);
+		System.out.println("[1][2][3]");
+		System.out.println("[4][5][6]");
+		System.out.println("[7][8][9]");
+		System.out.print("Enter the number of the board: ");
+		choice = input.nextInt();
+		while (choice != 9){
+			System.out.println("I'm sorry, that's not correct. Try thinking of what would happen if the small board grew.");
+			System.out.print("Enter the number of the board: ");
+			choice = input.nextInt();
+		}
+		System.out.print("Good job! box 9 is correct! Let's move on to more difficult things.");
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");  
+		System.out.flush(); 
+		board[3][1][1] = 'x';
+		board[3][0][0] = 'x';
+		board[9][1][0]= 'x';
+		System.out.println("Hey! It looks like x got a three in a row! That means it has one x for the small grid!");
+		printboard(board);
+		System.out.print("Poor o. Let's give it a chance.");
+		try {
+			Thread.sleep(6000);
+		} catch (InterruptedException e) {
+			System.err.println("Interrupted: " + e.getMessage());
+		}
+		System.out.print("\033[H\033[2J");
+		System.out.flush();
+		System.out.println("X just sent o back to the board x already won!");
+		board[4][1][0] = 'x';
+		board[0][0][0] = 'o';
+		board[0][0][1] = 'x';
+		board[1][1][1] = 'o';
+		printboard(board);
+	
 	}
 	//This is the board
 	public static void printboard(char [][][] board){
